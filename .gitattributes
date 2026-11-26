@@ -8,3 +8,9 @@
 *.json text eol=lf
 *.cmd text eol=crlf
 *.pdf binary
+
+*.wav binary
+*.flac binary
+*.mp3 binary
+*.ogg binary
+*.sfz text eol=lf

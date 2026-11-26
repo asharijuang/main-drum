@@ -10,6 +10,8 @@ test('server serves the app, supports HEAD and rejects private files and writes'
   const home = await fetch(base); assert.equal(home.status, 200); assert.match(await home.text(), /assets\/rhythm-core\.js/);
   assert.equal(home.headers.get('permissions-policy'), 'midi=(self)');
   for (const file of ['app.js', 'styles.css', 'rhythm-core.js']) assert.equal((await fetch(`${base}/assets/${file}`)).status, 200);
+  const mapping = await fetch(base + '/sounds/rusty-starter/kit.sfz'); assert.equal(mapping.status, 200); assert.match(mapping.headers.get('content-type'), /text\/plain/);
+  const sample = await fetch(base + '/sounds/rusty-starter/samples/kick-rr1.wav', { method: 'HEAD' }); assert.equal(sample.status, 200); assert.equal(sample.headers.get('content-type'), 'audio/wav');
   const head = await fetch(base, { method: 'HEAD' }); assert.equal(head.status, 200); assert.equal(await head.text(), '');
   assert.equal((await fetch(base + '/buku-drum-interaktif.html')).status, 200);
   assert.equal((await fetch(base + '/package.json')).status, 404);

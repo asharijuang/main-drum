@@ -1,0 +1,82 @@
+{
+  "library": "Big Rusty Drums",
+  "creator": "Karoryfer Samples",
+  "license": "CC0-1.0",
+  "repository": "https://github.com/sfzinstruments/karoryfer.big-rusty-drums",
+  "commit": "f07ce00df34a46b6b08375be56fe116cf15782bc",
+  "changes": "Selected close-mic FLAC recordings decoded/resampled to 48 kHz PCM16 WAV. Shared peak gain within each instrument; shared across soft/hard snare layers. Compact GM SFZ mapping written for Drum Companion.",
+  "samples": [
+    {
+      "name": "kick-rr1",
+      "source": "Samples/kick_24/kick/kick/k_vl10_rr1.flac",
+      "sha": "c5bd52ac099f8c84d1070a0eecc265bfe1750f3d",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/kick_24/kick/kick/k_vl10_rr1.flac"
+    },
+    {
+      "name": "kick-rr2",
+      "source": "Samples/kick_24/kick/kick/k_vl10_rr2.flac",
+      "sha": "6636ad0e7a7b248d2d33af3c807d5c6cbcdc7b84",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/kick_24/kick/kick/k_vl10_rr2.flac"
+    },
+    {
+      "name": "snare-soft-rr1",
+      "source": "Samples/snare_14/center/top/sn_center_vl2_rr1.flac",
+      "sha": "ddc602ab1702464f1eae0cfec6f6653a2f8f903c",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/snare_14/center/top/sn_center_vl2_rr1.flac"
+    },
+    {
+      "name": "snare-soft-rr2",
+      "source": "Samples/snare_14/center/top/sn_center_vl2_rr2.flac",
+      "sha": "83f495bd95a6c1a6c90849d78843843df625f887",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/snare_14/center/top/sn_center_vl2_rr2.flac"
+    },
+    {
+      "name": "snare-rr1",
+      "source": "Samples/snare_14/center/top/sn_center_vl8_rr1.flac",
+      "sha": "d85e5e81b39c8dc754fa71fd00e2df59a6c55c1a",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/snare_14/center/top/sn_center_vl8_rr1.flac"
+    },
+    {
+      "name": "snare-rr2",
+      "source": "Samples/snare_14/center/top/sn_center_vl8_rr2.flac",
+      "sha": "a81e8d7d8cbecc2b5a25375e57cbfc259784fab9",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/snare_14/center/top/sn_center_vl8_rr2.flac"
+    },
+    {
+      "name": "hihat-rr1",
+      "source": "Samples/hihat_14/cl/cl/ht_cl_vl4_rr1.flac",
+      "sha": "397a1c670928e4ad7c8e5b4e65211149c788cc63",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/hihat_14/cl/cl/ht_cl_vl4_rr1.flac"
+    },
+    {
+      "name": "hihat-rr2",
+      "source": "Samples/hihat_14/cl/cl/ht_cl_vl4_rr2.flac",
+      "sha": "21000f6a955b4c3bc5179236a3743ec47d35e1d3",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/hihat_14/cl/cl/ht_cl_vl4_rr2.flac"
+    },
+    {
+      "name": "tom-rr1",
+      "source": "Samples/tom_14/center/cl/t14_vl6_rr1.flac",
+      "sha": "008ba2771f250b7851bcbfc7010813353df1bfcd",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/tom_14/center/cl/t14_vl6_rr1.flac"
+    },
+    {
+      "name": "floor-rr1",
+      "source": "Samples/tom_18/center/cl/t18_vl6_rr1.flac",
+      "sha": "19c43d7c68d989d945d4e582e66f4b4fa63f355f",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/tom_18/center/cl/t18_vl6_rr1.flac"
+    },
+    {
+      "name": "ride-rr1",
+      "source": "Samples/ride_22/rd/cl/rd_vl7_rr1.flac",
+      "sha": "2de780df68141cf280edeea40fc4b8050d30b99c",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/ride_22/rd/cl/rd_vl7_rr1.flac"
+    },
+    {
+      "name": "crash-rr1",
+      "source": "Samples/crash_17/cr/cl/cr_vl4_rr1.flac",
+      "sha": "097e5db0c92f8d1db2b5748a9db75df6a3a9f701",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/crash_17/cr/cl/cr_vl4_rr1.flac"
+    }
+  ]
+}

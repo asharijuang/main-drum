@@ -26,7 +26,7 @@ Halaman statis ada di `public/index.html`. File ini bisa dibuka langsung, tetapi
 
 - Buku 16 bab: drum kit, hitungan, birama, notasi, rudiment, groove, fill, dan latihan mendengar.
 - Player notasi yang selalu terlihat, dengan ukuran Mini, Setengah, dan Penuh.
-- Metronom, BPM, suara drum sintetis, ghost note, sticking dan pemilihan instrumen.
+- Metronom, BPM, sound kit akustik WAV/SFZ, ghost note, sticking dan pemilihan instrumen; synthesizer tersedia sebagai cadangan.
 - Editor 4/4 untuk 1–4 bar dengan eighth, sixteenth, triplet dan sextuplet.
 - MIDI detector, pad learning, velocity, count-in satu bar dan rekaman menjadi notasi.
 - Simpan pola lokal, pencarian judul, ekspor Standard MIDI File/JSON dan impor JSON.
@@ -92,3 +92,7 @@ Lisensi belum ditentukan (`UNLICENSED`); repo tidak otomatis memberikan izin pen
 
 - [Web MIDI API](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API)
 - [YouTube IFrame Player API](https://developers.google.com/youtube/iframe_api_reference)
+
+## Sound kits yang bisa diganti
+
+Suara drum bawaan sekarang memakai 12 sampel akustik WAV dari Big Rusty Drums (CC0), dengan SFZ sebagai mapping. Buka tab Sound kits untuk memilih atau mengimpor folder kit. Panduan lengkap: [Mengganti sound bundle](docs/SOUND-KITS.md). File sampel ada di public/sounds/, terpisah dari kode UI. Dukungan SFZ terbatas pada subset drum yang didokumentasikan; synthesizer tersedia sebagai cadangan. Kredit sampel: THIRD_PARTY_NOTICES.md.

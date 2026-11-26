@@ -1,0 +1,17 @@
+// Template: copy this folder, add your own WAV files, then register in kits.json.
+<control> default_path=samples/
+<global> loop_mode=one_shot pitch_keytrack=0 amp_veltrack=100
+<group> key=36 volume=-2
+<region> sample=kick.wav
+<group> key=38 volume=-3
+<region> sample=snare.wav
+<group> key=42 volume=-9 group=1 off_by=1
+<region> sample=hihat.wav
+<group> key=50 volume=-4
+<region> sample=tom.wav
+<group> key=41 volume=-4
+<region> sample=floor.wav
+<group> key=51 volume=-9
+<region> sample=ride.wav
+<group> key=49 volume=-10
+<region> sample=crash.wav

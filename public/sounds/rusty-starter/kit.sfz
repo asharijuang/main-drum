@@ -1,0 +1,27 @@
+// Drum Companion: compact Big Rusty Drums acoustic kit (CC0).
+// Samples: Karoryfer Samples. See sources.json and LICENSE-CC0.txt.
+<control> default_path=samples/
+<global> loop_mode=one_shot pitch_keytrack=0 amp_veltrack=100
+
+<group> key=36 volume=-2
+<region> sample=kick-rr1.wav seq_length=2 seq_position=1
+<region> sample=kick-rr2.wav seq_length=2 seq_position=2
+
+<group> key=38 volume=-3
+<region> sample=snare-soft-rr1.wav lovel=1 hivel=44 seq_length=2 seq_position=1
+<region> sample=snare-soft-rr2.wav lovel=1 hivel=44 seq_length=2 seq_position=2
+<region> sample=snare-rr1.wav lovel=45 hivel=127 seq_length=2 seq_position=1
+<region> sample=snare-rr2.wav lovel=45 hivel=127 seq_length=2 seq_position=2
+
+<group> key=42 volume=-9 group=1 off_by=1
+<region> sample=hihat-rr1.wav seq_length=2 seq_position=1
+<region> sample=hihat-rr2.wav seq_length=2 seq_position=2
+
+<group> key=50 volume=-4
+<region> sample=tom-rr1.wav
+<group> key=41 volume=-4
+<region> sample=floor-rr1.wav
+<group> key=51 volume=-9
+<region> sample=ride-rr1.wav
+<group> key=49 volume=-10
+<region> sample=crash-rr1.wav

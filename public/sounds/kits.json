@@ -1,0 +1,11 @@
+{
+  "default": "rusty-starter",
+  "kits": [
+    {
+      "id": "rusty-starter",
+      "name": "Big Rusty · Acoustic Starter",
+      "sfz": "rusty-starter/kit.sfz",
+      "credit": "Karoryfer Samples · CC0 · 12 WAV, snare velocity layers, round-robin"
+    }
+  ]
+}
