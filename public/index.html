@@ -25,8 +25,20 @@
 <h3>Koleksi tersimpan</h3><div id="savedList" class="result-list"></div>
 </div>
 <div class="tool-pane" id="tool-youtube" role="tabpanel" aria-labelledby="tab-youtube" hidden>
-<h3>Belajar satu bagian dari video</h3><p class="muted">Tempel link YouTube, ulang bagian pendek, cari BPM dengan tap, lalu catat polanya di editor atau lewat MIDI.</p><div class="form-row"><label class="grow">Link YouTube <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></label><button id="loadYoutube" class="primary">Buka video</button></div><p id="youtubeStatus" class="tool-status" role="status">Link memuat pemutar video, bukan transkripsi otomatis. Audio YouTube tidak diekstrak.</p><div id="youtubeFrame" class="video-frame" hidden></div><div class="form-row"><label>Mulai A (detik) <input type="number" id="ytStart" min="0" max="43200" value="0"></label><label>Akhir B (detik) <input type="number" id="ytEnd" min="1" max="43200" value="10"></label><button id="applySegment">Putar bagian A–B</button><button id="youtubeToDraft">Buat catatan video</button></div><div id="youtubeExternal"></div><p><small>Pemutar YouTube memerlukan internet. Jika video menolak embed, buka di YouTube. Titik akhir B memakai fitur pemutar; untuk mengulang, tekan Putar bagian A–B lagi. Player notasi adalah latihan terpisah, belum tersinkron otomatis dengan video.</small></p>
-<div class="tap-box"><button id="tapTempo">Tap beat beberapa kali</button><strong id="tapResult">— BPM</strong><button id="useTapTempo" disabled>Gunakan BPM ini</button></div><p class="callout">Untuk draf otomatis, gunakan tab Audio ke draf dengan file audio yang kamu miliki. Video dengan banyak instrumen tidak bisa diubah menjadi partitur akurat hanya dari link dalam versi lokal ini.</p>
+<div class="youtube-heading"><div><h3>Tonton di kiri. Catat di kanan.</h3><p class="muted">Workspace belajar manual. Video dan draf tetap terbuka bersama.</p></div><span class="local-badge">Catatan milikmu</span></div>
+<div class="youtube-split">
+<section class="youtube-video-column" aria-label="Video dan alat belajar">
+<div class="form-row youtube-url"><label class="grow">Link YouTube <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></label><button id="loadYoutube" class="primary">Buka video</button></div>
+<div class="youtube-empty" id="youtubeEmpty"><span aria-hidden="true">▶</span><strong>Mulai dari satu bagian pendek.</strong><p>Tempel link video. Sambil menonton, isi pukulannya di editor sebelah.</p></div>
+<div id="youtubeFrame" class="video-frame" hidden></div>
+<p id="youtubeStatus" class="tool-status" role="status">Video diputar lewat YouTube. Notasi di kanan kamu tulis sendiri; belum ada transkripsi otomatis.</p>
+<div class="form-row youtube-segment"><label>Mulai A <input type="number" id="ytStart" min="0" max="43200" value="0"> detik</label><label>Akhir B <input type="number" id="ytEnd" min="1" max="43200" value="10"> detik</label><button id="applySegment">Putar A–B</button></div>
+<div class="tap-box"><button id="tapTempo">Tap beat</button><strong id="tapResult">— BPM</strong><button id="useTapTempo" disabled>Pakai BPM</button></div>
+<div id="youtubeExternal"></div>
+<details class="youtube-help"><summary>Tips mencatat dari video</summary><p>Dengarkan snare dahulu, lalu kick dan hi-hat. Isi kotak sesuai hitungan, kemudian bandingkan dengan video. Gunakan Tom 1, Tom 2, dan Tom 3 untuk fill.</p><p>Untuk mengulang A–B, tekan tombolnya lagi. Player notasi dan video belum tersinkron otomatis. Jika video menolak embed, buka lewat tautan YouTube.</p></details>
+</section>
+<section class="youtube-notes-column" aria-label="Catatan dan editor notasi"><div class="youtube-notes-heading"><div><h3>Catatan notasi</h3><p>Satu draf yang sama dengan Editor pola.</p></div><button id="youtubeToDraft">Tautkan ke video</button></div><div id="youtubeEditorHost"></div></section>
+</div>
 </div>
 <div class="tool-pane" id="tool-audio" role="tabpanel" aria-labelledby="tab-audio" hidden>
 <h3>File audio → draf ritme</h3><p class="muted">Deteksi serangan bunyi secara lokal. Paling cocok untuk rekaman drum pendek dan jelas, atau ketukan satu instrumen. Ini detektor sederhana, bukan model AI pemisah instrumen.</p><div class="form-row"><label>Audio lokal <input id="audioFile" type="file" accept="audio/*"></label><label>Mulai analisis <input id="audioStart" type="number" min="0" max="3600" value="0"> detik</label><label>Kepekaan <select id="audioSensitivity"><option value="2">Tinggi</option><option value="3" selected>Sedang</option><option value="4.5">Rendah</option></select></label></div><div class="form-row"><label>Hasil instrumen <select id="audioMode"><option value="sn">Semua onset ke snare (lebih mudah dicek)</option><option value="bands">Tebak kick / snare / hi-hat (eksperimental)</option></select></label><button id="analyzeAudio" class="primary">Analisis & buat draf</button></div><audio id="audioPreview" controls preload="metadata"></audio><p id="audioStatus" role="status" class="tool-status">Analisis mengikuti BPM, grid, dan jumlah bar di tab MIDI. Potongan dimulai tepat pada detik yang kamu isi; posisikan di beat 1. Maksimal empat bar, 30 detik analisis, dan file 30 MB.</p><p><small>Audio diproses di perangkat ini. Bass, vokal, dan gitar bisa terdeteksi sebagai pukulan. Dengarkan, koreksi kotak di editor, lalu simpan. File tidak dikirim ke server.</small></p>
@@ -55,4 +67,5 @@
 <script src="./assets/sample-kit.js"></script>
 <script src="./assets/synth-fallback.js"></script>
 <script src="./assets/sound-kits.js"></script>
-<script src="./assets/app.js"></script></body></html>
+<script src="./assets/app.js"></script>
+<script src="./assets/youtube-workspace.js"></script></body></html>
