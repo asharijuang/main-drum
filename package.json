@@ -1,0 +1,15 @@
+{
+  "name": "drum-companion",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Interactive beginner drum book, notation player and local MIDI practice studio.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/server.cjs",
+    "test": "node --test",
+    "check": "node --check public/assets/app.js && node --check public/assets/rhythm-core.js && node --check scripts/server.cjs"
+  },
+  "license": "UNLICENSED"
+}
