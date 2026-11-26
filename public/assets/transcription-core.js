@@ -1,6 +1,18 @@
 /* Local, heuristic rhythm drafts. Deliberately not labelled as an AI transcription. */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory(require('./rhythm-core.js'));else root.DrumTranscription=factory(root.DrumCore);})(globalThis,function(core){
   'use strict';
+  function displayOptions(target = 'other') {
+    if (!['other', 'current'].includes(target)) throw Error('Pilihan sumber audio tidak valid.');
+    return {
+      video: { displaySurface: 'browser' },
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, suppressLocalAudioPlayback: false },
+      preferCurrentTab: target === 'current',
+      selfBrowserSurface: target === 'current' ? 'include' : 'exclude',
+      monitorTypeSurfaces: 'exclude',
+      systemAudio: 'exclude',
+      surfaceSwitching: 'exclude'
+    };
+  }
   function captureConfig({ bpm = 65, grid = 4, bars = 2, mode = 'bands', sensitivity = 3, align = true } = {}) {
     bpm = Number(bpm); grid = Number(grid); bars = Number(bars); sensitivity = Number(sensitivity);
     if (!Number.isFinite(bpm) || bpm < 30 || bpm > 180) throw Error('BPM harus 30–180.');
@@ -29,5 +41,5 @@
     if (!notes) throw Error('Semua pukulan jatuh di luar grid. Periksa BPM dan awal potongannya.');
     return { ...result, counts, notes, onsets: hits.length, offset, capturedSeconds: samples.length / rate, config };
   }
-  return { captureConfig, makeDraft };
+  return { displayOptions, captureConfig, makeDraft };
 });

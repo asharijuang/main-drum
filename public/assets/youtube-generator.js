@@ -18,6 +18,9 @@
     ui('ytBeginCapture').disabled = pending || !capture || api.isCapturing;
     ui('ytFinishCapture').disabled = !api.isCapturing;
     ui('ytCancelCapture').disabled = !pending && !capture;
+    ui('ytCaptureTarget').disabled = pending || !!capture;
+    ui('ytOpenExternal').disabled = pending || api.isCapturing;
+    ui('ytCancelCapture').textContent = api.isCapturing ? 'Batalkan tangkapan' : pending ? 'Batalkan pemilihan' : 'Ganti / putuskan sumber';
   }
   function lockApp(on) {
     if (on) {
@@ -52,16 +55,16 @@
   }
   async function connectAudio() {
     if (pending || capture) return;
-    const id = videoId || youtubeId(ui('youtubeUrl').value);
-    if (!id) { message('Tempel link YouTube yang valid dan buka videonya dahulu.', true); return; }
+    const id = youtubeId(ui('youtubeUrl').value) || videoId;
     if (recording || session) { message('Akhiri rekaman MIDI atau sesi latihan sebelum menangkap audio.', true); return; }
     if (!isSecureContext || !navigator.mediaDevices?.getDisplayMedia || !globalThis.AudioWorkletNode) { message('Fitur ini memerlukan Chrome/Edge desktop melalui localhost atau HTTPS. Buka dengan npm start; jangan lewat file:// atau browser dalam app yang tidak mendukung capture.', true); return; }
     const ownToken = ++token;
     pending = true; buttons();
-    message('Pilih tab yang sedang memutar YouTube, lalu centang Bagikan audio tab. Jangan pilih mikrofon.');
+    const target = ui('ytCaptureTarget').value;
+    message(target === 'other' ? 'Pada dialog browser, buka Chrome Tab / Microsoft Edge Tab, pilih tab YouTube yang sudah diputar, lalu centang Bagikan audio tab dan tekan Bagikan.' : 'Pada dialog browser, pilih tab app ini dan aktifkan Bagikan audio tab. Pastikan video di dalam app sudah bisa diputar.');
     let stream, context;
     try {
-      const streamPromise = navigator.mediaDevices.getDisplayMedia({ video: true, audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, suppressLocalAudioPlayback: false }, preferCurrentTab: true, selfBrowserSurface: 'include', systemAudio: 'exclude' });
+      const streamPromise = navigator.mediaDevices.getDisplayMedia(DrumTranscription.displayOptions(target));
       stop();
       stream = await streamPromise;
       if (ownToken !== token) { stream.getTracks().forEach(track => track.stop()); return; }
@@ -77,7 +80,7 @@
       source.connect(analyser); analyser.connect(node); node.connect(mute); mute.connect(context.destination);
       const state = { stream, context, source, node, analyser, mute, chunks: [], frames: 0, id, config: null, recording: false };
       capture = state;
-      ui('ytCaptureSource').textContent = 'Audio: ' + (stream.getAudioTracks()[0].label || 'tab yang dipilih');
+      ui('ytCaptureSource').textContent = 'Sumber terpilih: ' + (stream.getVideoTracks()[0]?.label || stream.getAudioTracks()[0].label || 'tab yang dipilih');
       const meter = new Float32Array(analyser.fftSize);
       state.meterTimer = setInterval(() => {
         if (capture !== state) return;
@@ -137,7 +140,7 @@
     await new Promise(resolve => setTimeout(resolve, 0));
     if (analysisToken !== token) return;
     try {
-      candidate = DrumTranscription.makeDraft(samples, rate, options, 'YouTube ' + id + ' · DRAF AUDIO', 'Audio tab pilihan pengguna · referensi https://www.youtube.com/watch?v=' + id);
+      candidate = DrumTranscription.makeDraft(samples, rate, options, id ? 'YouTube ' + id + ' · DRAF AUDIO' : 'Audio tab · DRAF AUDIO', 'Audio tab pilihan pengguna' + (id ? ' · referensi https://www.youtube.com/watch?v=' + id : ''));
       renderCandidate();
       ui('ytCaptureProgress').value = 1;
       message('Draf siap: ' + candidate.notes + ' not perkiraan. Tekan Gunakan di editor untuk mengganti draf saat ini. BPM dan ketukan pertama perlu kamu periksa.');
@@ -150,6 +153,14 @@
     ui('ytCaptureCounts').textContent = counts + (candidate.config.align ? ' · awal digeser ' + candidate.offset.toFixed(2) + ' detik ke onset pertama' : '') + (candidate.dropped ? ' · ' + candidate.dropped + ' onset di luar grid' : '');
   }
   ui('ytConnectAudio').addEventListener('click', connectAudio);
+  ui('ytOpenExternal').addEventListener('click', () => {
+    const id = youtubeId(ui('youtubeUrl').value) || videoId;
+    if (!id) { message('Isi link YouTube yang valid dahulu. Untuk sumber tab lain, kamu bisa langsung memakai Pilih tab audio.', true); return; }
+    window.open('https://www.youtube.com/watch?v=' + id, '_blank', 'noopener,noreferrer');
+    if (!capture) ui('ytCaptureTarget').value = 'other';
+    message(capture ? 'Tab YouTube dibuka. Sumber audio saat ini tetap sama; tekan Ganti / putuskan sumber lalu pilih tab baru.' : 'Putar video di tab YouTube yang baru dibuka. Kembali ke tab app ini, lalu tekan Pilih tab audio dan pilih tab YouTube tersebut.');
+  });
+  ui('ytUseLocalAudio').addEventListener('click', () => showTool('audio', true));
   ui('ytBeginCapture').addEventListener('click', begin);
   ui('ytFinishCapture').addEventListener('click', () => { if (capture?.recording) capture.node.port.postMessage({ type: 'stop' }); });
   ui('ytCancelCapture').addEventListener('click', () => { token++; pending = false; release(); message('Capture dibatalkan. Tidak ada catatan yang diganti.'); });

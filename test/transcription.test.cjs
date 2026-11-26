@@ -1,5 +1,9 @@
 const test=require('node:test'),assert=require('node:assert/strict');
-const {captureConfig,makeDraft}=require('../public/assets/transcription-core.js');
+const {displayOptions,captureConfig,makeDraft}=require('../public/assets/transcription-core.js');
+test('external audio chooser defaults to another browser tab without conflicting options',()=>{
+ const other=displayOptions();assert.equal(other.video.displaySurface,'browser');assert.equal(other.preferCurrentTab,false);assert.equal(other.selfBrowserSurface,'exclude');assert.equal(other.monitorTypeSurfaces,'exclude');
+ const current=displayOptions('current');assert.equal(current.preferCurrentTab,true);assert.equal(current.selfBrowserSurface,'include');assert.throws(()=>displayOptions('microphone'));
+});
 test('capture limits reject invalid BPM/grid and captures beyond 30 seconds',()=>{
  assert.equal(captureConfig({bpm:120,bars:2}).duration,4);
  for(const options of [{bpm:0},{bpm:181},{grid:5},{bars:3},{bpm:30,bars:4},{mode:'magic'}])assert.throws(()=>captureConfig(options));
