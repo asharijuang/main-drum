@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node scripts/server.cjs",
     "test": "node --test",
-    "check": "node --check public/assets/app.js && node --check public/assets/rhythm-core.js && node --check scripts/server.cjs && node --check public/assets/sample-kit.js && node --check public/assets/synth-fallback.js && node --check public/assets/sound-kits.js && node --check public/assets/youtube-workspace.js && node --check public/assets/transcription-core.js && node --check public/assets/youtube-generator.js && node --check public/assets/capture-processor.js && node --check public/assets/song-core.js && node --check public/assets/spectral-model.js && node --check public/assets/song-worker.js && node --check public/assets/song-lab.js && node --check public/assets/analysis-references.js",
-    "benchmark": "node scripts/benchmark.cjs"
+    "check": "node --check public/assets/app.js && node --check public/assets/rhythm-core.js && node --check scripts/server.cjs && node --check public/assets/sample-kit.js && node --check public/assets/synth-fallback.js && node --check public/assets/sound-kits.js && node --check public/assets/youtube-workspace.js && node --check public/assets/transcription-core.js && node --check public/assets/youtube-generator.js && node --check public/assets/capture-processor.js && node --check public/assets/song-core.js && node --check public/assets/spectral-model.js && node --check public/assets/song-worker.js && node --check public/assets/song-lab.js && node --check public/assets/analysis-references.js && node --check scripts/create-example.cjs",
+    "benchmark": "node scripts/benchmark.cjs",
+    "example": "node scripts/create-example.cjs"
   },
   "license": "UNLICENSED"
 }

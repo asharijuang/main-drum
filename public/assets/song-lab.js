@@ -85,6 +85,19 @@
   ui('songAudio').addEventListener('timeupdate',()=>{if(!asset||!ui('songLoop').checked)return;try{const s=selection(),audio=ui('songAudio');if(audio.currentTime>=s.end)audio.currentTime=s.start;}catch{}});
   ui('songDownload').addEventListener('click',()=>{if(asset)download(wavBlob(asset.samples,asset.rate),'drum-study-recording.wav');});
   ui('songImport').addEventListener('click',()=>ui('songFile').click());
+  ui('songLoadExample').addEventListener('click',async()=>{
+    if(DrumYouTubeCapture.isCapturing){tell('Selesaikan capture dahulu.',true);return;}
+    ui('songLoadExample').disabled=true;tell('Memuat contoh WAV 120 BPM yang polanya sudah diketahui…');
+    try{
+      const response=await fetch(new URL('./examples/drum-test-120bpm-64s.wav',document.baseURI),{cache:'no-store'});
+      if(!response.ok)throw Error('WAV contoh tidak ditemukan (HTTP '+response.status+'). Pastikan app dijalankan dari folder proyek terbaru.');
+      const context=new AudioContext({sampleRate:48000});let buffer;try{buffer=await context.decodeAudioData(await response.arrayBuffer());}finally{await context.close();}
+      const samples=new Float32Array(buffer.length);for(let c=0;c<buffer.numberOfChannels;c++){const data=buffer.getChannelData(c);for(let i=0;i<samples.length;i++)samples[i]+=data[i]/buffer.numberOfChannels;}
+      await setRecording(samples,buffer.sampleRate,{name:'Contoh drum 120 BPM',source:'Contoh terkontrol Drum Companion · 64 detik'});
+      setTempo(120);ui('songStart').value='0';ui('songAnalyzeBars').value='8';ui('ytCaptureGrid').value='4';ui('ytCaptureBars').value='4';ui('ytCaptureMode').value='spectral';updateSelection();
+      tell('Contoh siap: 64 detik, 120 BPM, 4/4. Untuk pembanding, analisis 0–16 detik (8 bar). Hi-hat eighths; kick di 1/3; snare di 2/4. Klik Analisis bagian & buat 5 level.');
+    }catch(error){tell('Contoh gagal dimuat: '+error.message,true);}finally{ui('songLoadExample').disabled=false;}
+  });
   ui('songFile').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(DrumYouTubeCapture.isCapturing)throw Error('Selesaikan capture dahulu.');if(file.size>100*1024*1024)throw Error('File lebih dari 100 MB.');tell('Membaca rekaman audio…');const context=new AudioContext({sampleRate:48000});let buffer;try{buffer=await context.decodeAudioData(await file.arrayBuffer());}finally{await context.close();}if(buffer.duration>300)throw Error('Gunakan potongan audio maksimal 5 menit.');const samples=new Float32Array(buffer.length);for(let c=0;c<buffer.numberOfChannels;c++){const d=buffer.getChannelData(c);for(let i=0;i<samples.length;i++)samples[i]+=d[i]/buffer.numberOfChannels;}await setRecording(samples,buffer.sampleRate,{name:file.name.replace(/\.[^.]+$/,''),source:'File lokal '+file.name});}catch(error){tell(error.message,true);}event.target.value='';});
   new ResizeObserver(drawWaveform).observe(ui('songWaveform'));
   window.addEventListener('beforeunload',()=>{stopBacking();worker?.terminate();if(audioUrl)URL.revokeObjectURL(audioUrl);});
