@@ -4,6 +4,7 @@
   let asset=null,analysis=null,tempo=null,worker=null,workerSerial=0,assetVersion=0,analysisVersion=0,activeLevel=0;
   let audioUrl=null,backing=null,backingGain=null;
   const requests=new Map();
+  const referenceLoader=DrumAnalysisReferences.createLoader({baseUrl:document.baseURI});
   const labels=['Ikuti beat','Fondasi','Groove dasar','Variasi','Draf bagian'];
   function tell(text,error=false){ui('songStatus').textContent=text;ui('songStatus').classList.toggle('error',error);}
   function getWorker(){
@@ -40,23 +41,20 @@
     try{const {start,end}=selection();const a=start/asset.duration*width,b=end/asset.duration*width;context.fillStyle='#dcb67b33';context.fillRect(a,0,b-a,height);context.strokeStyle='#ffd59d';context.beginPath();context.moveTo(a,0);context.lineTo(a,height);context.stroke();}catch{}
   }
   async function prepareModel(){
-    initAudio();await soundSystem.ready;
-    if(soundSystem.mode!=='kit')throw Error('Pilih sound kit WAV yang lengkap dahulu untuk model referensi.');
-    const references=[];
-    for(const inst of ['kick','sn','hh']){const region=soundSystem.engine.regions.find(r=>r.inst===inst&&r.hivel===127&&r.sequencePosition===1);if(!region)throw Error('Kit referensi tidak memiliki '+inst+' pada velocity penuh.');const buffer=soundSystem.engine.buffers.get(region.sample);const count=Math.min(buffer.length,Math.round(buffer.sampleRate*.4)),samples=new Float32Array(count);for(let channel=0;channel<buffer.numberOfChannels;channel++){const data=buffer.getChannelData(channel);for(let i=0;i<count;i++)samples[i]+=data[i]/buffer.numberOfChannels;}references.push({inst,samples,rate:buffer.sampleRate});}
-    return task('train',{references});
+    try{const {references,name}=await referenceLoader.load();return {...await task('train',{references}),referenceName:name};}
+    catch(error){const failure=Error('Model referensi tidak dapat dimuat: '+error.message);failure.code='REFERENCE_LOAD';throw failure;}
   }
   async function analyze(){
-    if(!asset)return;tell('Menganalisis bagian di background…');ui('songAnalyze').disabled=true;
+    if(!asset)return;tell('Menganalisis bagian di background…');ui('songAnalyze').disabled=true;ui('songReferenceFallback').hidden=true;
     const ownVersion=++analysisVersion,version=assetVersion;
-    try{const options=selection();if(options.end-options.start<.5)throw Error('Bagian terlalu pendek.');if(options.mode==='spectral'){const trained=await prepareModel();ui('songEngine').textContent='Referensi kit aktif · '+trained.templates+' template kick/snare/hi-hat. Tidak dilatih pada seluruh lagu.';}
+    try{const options=selection();if(options.end-options.start<.5)throw Error('Bagian terlalu pendek.');if(options.mode==='spectral'){tell('Memuat referensi analisis bawaan…');const trained=await prepareModel();ui('songEngine').textContent=trained.referenceName+' · '+trained.templates+' template kick/snare/hi-hat · terpisah dari sound playback. Tidak dilatih pada seluruh lagu.';}
       else ui('songEngine').textContent=options.mode==='multi'?'Multi-band eksperimen: dapat menambah false positive.':'Detektor frekuensi lama untuk perbandingan.';
       const samples=asset.samples.slice(Math.floor(options.start*asset.rate),Math.floor(options.end*asset.rate));
       const result=await task('analyze',{samples:samples.buffer,rate:asset.rate,options},[samples.buffer]);
       if(version!==assetVersion||ownVersion!==analysisVersion)return;
       analysis={...result,options,name:ui('songName').value,section:ui('songSection').value};renderLevels();
       tell(result.hits.length+' event perkiraan · '+result.groove.analyzedBars+' bar dianalisis · groove wakil dari bar '+result.groove.representativeBar+' · kemiripan pengulangan '+result.groove.repeatSimilarity+'. Lima level siap, bukan partitur terverifikasi.');
-    }catch(error){if(version===assetVersion&&ownVersion===analysisVersion)tell('Analisis belum berhasil: '+error.message,true);}
+    }catch(error){if(version===assetVersion&&ownVersion===analysisVersion){tell('Analisis belum berhasil: '+error.message+(error.code==='REFERENCE_LOAD'?' Rekamanmu tetap aman. Coba lagi setelah server/file diperbaiki, atau gunakan detektor tanpa sample.':''),true);if(error.code==='REFERENCE_LOAD')ui('songReferenceFallback').hidden=false;}}
     finally{ui('songAnalyze').disabled=false;}
   }
   function patternFor(index){const p=coreCopy(analysis.levels[index]);p.name=analysis.name+' · '+analysis.section+' · L'+(index+1)+' '+labels[index];p.source=analysis.options.source;p.info=analysis.levels[index].info;return p;}
@@ -78,6 +76,7 @@
   ui('songTempo').addEventListener('click',async()=>{if(!asset)return;const version=assetVersion;ui('songTempo').disabled=true;tell('Menghitung kandidat tempo…');try{const mono=DrumSong.downsample(asset.samples,asset.rate);const result=await task('tempo',{samples:mono.buffer,rate:8000},[mono.buffer]);if(version===assetVersion)applyTempoResult(result);}catch(error){tell(error.message,true);}finally{ui('songTempo').disabled=false;}});
   ui('songHalfTempo').addEventListener('click',()=>setTempo(+ui('ytCaptureBpm').value/2));ui('songDoubleTempo').addEventListener('click',()=>setTempo(+ui('ytCaptureBpm').value*2));
   ui('songAnalyze').addEventListener('click',analyze);ui('songPractice').addEventListener('click',practice);
+  ui('songReferenceFallback').addEventListener('click',()=>{invalidateAnalysis();ui('ytCaptureMode').value='bands';analyze();});
   ui('songBackingVolume').addEventListener('input',()=>{if(backingGain)backingGain.gain.setTargetAtTime(+ui('songBackingVolume').value,ctx.currentTime,.02);});
   ui('songUseLevel').addEventListener('click',()=>{if(!analysis)return;loadDraft(patternFor(activeLevel));status('#editorStatus','Level '+(activeLevel+1)+' dari rekaman. Ini aransemen latihan/draf, bukan transkripsi pasti.');showTool('youtube');});
   ui('songSaveLevels').addEventListener('click',()=>{if(!analysis)return;if(appData.patterns.length>95){tell('Koleksi hampir penuh. Hapus beberapa pola dahulu.',true);return;}for(let i=0;i<5;i++){const item={id:uid(),bpm:analysis.options.bpm,pattern:patternFor(i)};appData.patterns.unshift(item);installPattern('saved_'+item.id,item.pattern);}const ok=persist();renderLibrary();tell(ok?'Lima level disimpan ke koleksi browser. Rekaman audio tetap perlu dicadangkan terpisah.':'Penyimpanan browser gagal; ekspor pola untuk cadangan.',!ok);});

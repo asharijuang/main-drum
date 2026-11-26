@@ -47,9 +47,9 @@ Level 1–4 mengulang pola satu bar sambil bagian rekaman berjalan. Level 5 mema
 
 ## Model/algoritme akurasi
 
-Default baru memakai pencocokan spektrum dengan **nonnegative least squares**, berdasarkan tiga sample referensi dari kit aktif: kick, snare dan hi-hat. Beberapa aktivasi dapat muncul pada waktu bersamaan, sehingga kick + hi-hat tidak harus dipaksa menjadi satu instrumen.
+Default baru memakai pencocokan spektrum dengan **nonnegative least squares**, berdasarkan tiga sample analisis bawaan: kick, snare dan hi-hat. Sample dimuat mandiri dari sounds/analysis-reference.json; pilihan kit playback tidak memengaruhi kesiapan model. Beberapa aktivasi dapat muncul pada waktu bersamaan, sehingga kick + hi-hat tidak harus dipaksa menjadi satu instrumen.
 
-Ini model template kecil yang dihitung lokal, **bukan neural model atau LLM**. Referensi kit tidak mewakili semua timbre lagu. Tom 1/2/3, ride, crash dan artikulasi lain tetap perlu ditulis/koreksi manual. Kit yang tidak punya tiga referensi lengkap akan ditolak untuk mode ini. Mode frekuensi lama tersedia sebagai pembanding; multi-band masih eksperimen karena menambah false positive pada fixture evaluasi.
+Ini model template kecil yang dihitung lokal, **bukan neural model atau LLM**. Referensi kit tidak mewakili semua timbre lagu. Tom 1/2/3, ride, crash dan artikulasi lain tetap perlu ditulis/koreksi manual. Kegagalan memuat sample analisis menampilkan nama file/HTTP error dan menyediakan detektor cadangan. Referensi dapat dicoba ulang setelah sumber diperbaiki tanpa menghapus rekaman. Mode frekuensi lama tersedia sebagai pembanding; multi-band masih eksperimen karena menambah false positive pada fixture evaluasi.
 
 GPU tidak diperlukan untuk tahap ini. Pipeline dipisah ke worker agar model pretrained lokal yang lebih besar bisa dievaluasi selanjutnya. Menambahkan neural model tanpa evaluasi pada lagu nyata belum menjadi bukti peningkatan.
 
@@ -72,3 +72,5 @@ Referensi metode: [NMF drum transcription](https://archives.ismir.net/ismir2007/
 Kelima pola dapat disimpan ke localStorage. Audio tidak masuk localStorage karena jauh lebih besar. Gunakan Simpan rekaman WAV sebelum menutup/refresh, lalu impor lagi saat dibutuhkan. File cadangan pribadi sebaiknya di luar repo atau `.local/` yang diabaikan Git.
 
 Uji browser mencakup impor rekaman, worker tempo/model, lima level, sinkronisasi backing, editor, penyimpanan, dan capture fixture lebih dari satu menit. Dialog berbagi serta sumber video YouTube disimulasikan; pemutaran YouTube asli pada perangkat pengguna tetap perlu diuji. Capture lima menit belum diuji sebagai sesi penuh lima menit; batas dan penanganan frame-nya diuji terpisah.
+
+Jika muncul error referensi, rekaman bukan berarti rusak. Simpan WAV sebelum refresh. Pilihan suara sintetis/playback kini tetap dapat dipakai sambil model referensi analisis bekerja.

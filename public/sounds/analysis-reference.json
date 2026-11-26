@@ -1,0 +1,9 @@
+{
+  "name": "Big Rusty · Analysis Reference",
+  "license": "CC0-1.0",
+  "samples": [
+    { "inst": "kick", "file": "rusty-starter/samples/kick-rr1.wav" },
+    { "inst": "sn", "file": "rusty-starter/samples/snare-rr1.wav" },
+    { "inst": "hh", "file": "rusty-starter/samples/hihat-rr1.wav" }
+  ]
+}
