@@ -30,7 +30,7 @@ Halaman statis ada di `public/index.html`. File ini bisa dibuka langsung, tetapi
 - Editor 4/4 untuk 1–4 bar dengan eighth, sixteenth, triplet dan sextuplet.
 - MIDI detector, pad learning, velocity, count-in satu bar dan rekaman menjadi notasi.
 - Simpan pola lokal, pencarian judul, ekspor Standard MIDI File/JSON dan impor JSON.
-- YouTube study dengan bagian A–B, tap tempo dan pencatatan manual.
+- YouTube study dengan editor berdampingan, bagian A–B, tap tempo, dan generator draf dari audio tab berizin.
 - Draf ritme dari file audio lokal, serta timer dan jurnal latihan.
 
 ## Batas fitur
@@ -39,7 +39,7 @@ Halaman statis ada di `public/index.html`. File ini bisa dibuka langsung, tetapi
 | --- | --- |
 | MIDI | Note-on, velocity, mapping dan kuantisasi. Belum mendeteksi sticking kanan/kiri, hi-hat CC atau choke. |
 | Pencarian lagu | Pola bawaan, koleksi lokal dan tautan sumber luar. Belum ada katalog partitur lagu lengkap. |
-| YouTube | Pemutar dan alat belajar manual. Belum mentranskripsi audio langsung dari link atau menyinkronkan player notasi dengan video. |
+| YouTube | Pemutar, editor manual, dan generator draf heuristik dari audio tab. Memerlukan izin berbagi audio; bukan analisis langsung dari URL, bukan AI pemisah drum, dan belum sinkron dengan waktu video. |
 | Audio ke notasi | Detektor onset sederhana, bukan pemisah instrumen AI. Hasil berupa draf yang harus diperiksa. |
 | Akun & cloud | Tidak tersedia. Data disimpan di browser perangkat ini. |
 
@@ -101,4 +101,6 @@ E-drum: Tom 1, Tom 2, dan Tom 3 terpisah di diagram, editor, MIDI, notasi, serta
 
 ## Workspace YouTube
 
-YouTube study sekarang menampilkan video dan editor pola berdampingan di desktop, dengan scroll terpisah dan player bawah tetap terlihat. Catatan tidak dihapus saat ditautkan ke video atau saat pindah ke Editor pola. Panduan: [YouTube study](docs/YOUTUBE-STUDY.md). Di ponsel kedua panel disusun vertikal. Ini workspace pencatatan manual, bukan transkripsi otomatis.
+YouTube study sekarang menampilkan video dan editor pola berdampingan di desktop, dengan scroll terpisah dan player bawah tetap terlihat. Catatan tidak dihapus saat ditautkan ke video atau saat pindah ke Editor pola. Panduan: [YouTube study](docs/YOUTUBE-STUDY.md). Di ponsel kedua panel disusun vertikal. Workspace mendukung catatan manual dan generator draf dari audio tab, dengan koreksi hasil oleh pengguna.
+
+Generator audio tab memakai Screen Capture API dan AudioWorklet pada Chrome/Edge desktop melalui localhost/HTTPS. Tidak ada audio yang diunggah. Hasil berupa perkiraan kick/snare/hi-hat atau seluruh onset ke snare; Tom 1/2/3 belum diklasifikasikan otomatis. Lihat alur pemakaian di docs/YOUTUBE-STUDY.md.

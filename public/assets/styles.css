@@ -95,3 +95,27 @@ body.youtube-study { overflow: hidden; }
  .youtube-notes-column .actions { position: static; }
  .youtube-study .form-row .grow { min-width: 140px; }
 }
+
+.youtube-generator{margin:16px 0;padding:14px;border:1px solid #506455;border-radius:12px;background:#202b24}
+.youtube-generator h4{font-size:16px;margin:0 0 9px;line-height:1.45}
+.youtube-generator h4 span{display:inline-block;font-size:11px;font-weight:400;background:#4a4536;color:#ecd8a8;border-radius:5px;padding:2px 5px;margin-left:5px}
+.youtube-generator p{font-size:13px;line-height:1.6;margin:9px 0}
+.youtube-generator .form-row{gap:8px;margin:10px 0;align-items:end}
+.youtube-generator .form-row input[type=number]{width:65px}
+.youtube-generator .form-row label{font-size:12px}
+.youtube-generator .form-row select{min-height:34px;padding:6px;font-size:12px;max-width:100%}
+.youtube-generator .form-row button,.youtube-generator .actions button,.youtube-generator #ytApplyCapture{font-size:12px;padding:6px 9px;min-height:34px}
+.youtube-generator .actions{gap:7px;flex-wrap:wrap}
+.capture-align{font-size:12px;align-items:start;line-height:1.5}
+.capture-help,.capture-limit{color:#b9c9be}
+.capture-meter{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0;font-size:11px;color:#bbcfc1}
+.capture-meter span{overflow-wrap:anywhere;min-width:0}
+.capture-meter meter{width:100px;flex-shrink:0}
+.capture-progress{display:flex;align-items:center;gap:10px;font-size:11px;margin-top:10px;color:#c0d2c4}
+.capture-progress progress{height:6px;width:100%;accent-color:#9ae6c3}
+.capture-progress span{white-space:nowrap}
+.capture-result{padding:10px;background:#2c4536;border-radius:8px}
+.capture-result[hidden]{display:none}
+.capture-result strong{font-size:13px}
+.capture-result p{font-size:12px}
+.youtube-generator .capture-limit{font-size:11px}

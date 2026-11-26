@@ -25,13 +25,27 @@
 <h3>Koleksi tersimpan</h3><div id="savedList" class="result-list"></div>
 </div>
 <div class="tool-pane" id="tool-youtube" role="tabpanel" aria-labelledby="tab-youtube" hidden>
-<div class="youtube-heading"><div><h3>Tonton di kiri. Catat di kanan.</h3><p class="muted">Workspace belajar manual. Video dan draf tetap terbuka bersama.</p></div><span class="local-badge">Catatan milikmu</span></div>
+<div class="youtube-heading"><div><h3>Tonton di kiri. Catat di kanan.</h3><p class="muted">Tulis manual atau buat draf dari audio tab. Video dan editor tetap terbuka bersama.</p></div><span class="local-badge">Catatan milikmu</span></div>
 <div class="youtube-split">
 <section class="youtube-video-column" aria-label="Video dan alat belajar">
 <div class="form-row youtube-url"><label class="grow">Link YouTube <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."></label><button id="loadYoutube" class="primary">Buka video</button></div>
 <div class="youtube-empty" id="youtubeEmpty"><span aria-hidden="true">▶</span><strong>Mulai dari satu bagian pendek.</strong><p>Tempel link video. Sambil menonton, isi pukulannya di editor sebelah.</p></div>
 <div id="youtubeFrame" class="video-frame" hidden></div>
-<p id="youtubeStatus" class="tool-status" role="status">Video diputar lewat YouTube. Notasi di kanan kamu tulis sendiri; belum ada transkripsi otomatis.</p>
+<p id="youtubeStatus" class="tool-status" role="status">Video diputar lewat YouTube. Gunakan generator audio tab untuk membuat draf, atau tulis manual di kanan.</p>
+<section class="youtube-generator" aria-labelledby="ytGeneratorTitle">
+<h4 id="ytGeneratorTitle">Generator notasi dari audio tab <span>Eksperimental</span></h4>
+<p>Putar YouTube, hubungkan audio tab, lalu tangkap bagian pendek. App akan membuat draf pukulan untuk diperiksa di editor kanan.</p>
+<div class="form-row"><label>BPM <input type="number" id="ytCaptureBpm" min="30" max="180" value="65"></label><button id="ytCaptureUseBpm">Dari player</button><label>Grid <select id="ytCaptureGrid"><option value="2">1/8</option><option value="4" selected>1/16</option><option value="3">Triplet</option><option value="6">Sextuplet</option></select></label><label>Bar <select id="ytCaptureBars"><option value="1">1</option><option value="2" selected>2</option><option value="4">4</option></select></label></div>
+<div class="form-row"><label>Deteksi <select id="ytCaptureMode"><option value="bands">Tebak kick / snare / hi-hat</option><option value="sn">Semua onset ke snare</option></select></label><label>Kepekaan <select id="ytCaptureSensitivity"><option value="2">Tinggi</option><option value="3" selected>Sedang</option><option value="4.5">Rendah</option></select></label></div>
+<label class="capture-align"><input type="checkbox" id="ytCaptureAlign" checked> Jadikan onset pertama sebagai awal bar</label>
+<p class="capture-help">1. Tekan Hubungkan audio. Pilih tab browser yang memutar YouTube dan centang <strong>Bagikan audio tab</strong>. Jika video ada di app ini, pilih tab app ini.<br>2. Pastikan meter bergerak, lalu tekan Mulai tangkap pada bagian yang kamu inginkan.</p>
+<div class="capture-meter"><span id="ytCaptureSource">Belum ada audio terhubung</span><meter id="ytLevel" min="0" max="1" value="0" aria-label="Level audio tab"></meter></div>
+<div class="actions"><button id="ytConnectAudio">Hubungkan audio</button><button id="ytBeginCapture" class="primary" disabled>Mulai tangkap</button><button id="ytFinishCapture" disabled>Selesai lebih cepat</button><button id="ytCancelCapture" disabled>Batal / putuskan</button></div>
+<div class="capture-progress"><progress id="ytCaptureProgress" max="1" value="0" aria-label="Progres audio yang ditangkap"></progress><span id="ytCaptureTime">Maksimal 30 detik</span></div>
+<p id="ytCaptureStatus" class="tool-status" role="status">Pilih BPM dengan tap tempo atau isi sendiri. Proses lokal, tanpa API key. Chrome/Edge desktop melalui localhost atau HTTPS diperlukan.</p>
+<div id="ytCaptureResult" class="capture-result" hidden><strong id="ytCaptureSummary"></strong><p id="ytCaptureCounts"></p><button id="ytApplyCapture">Gunakan di editor · ganti draf saat ini</button></div>
+<p class="capture-limit">Deteksi serangan bunyi sederhana, bukan model AI pemisah drum. Bass/vokal/gitar bisa tertukar; Tom 1/2/3 belum dikenali otomatis. Periksa BPM, instrumen, dan hitungan pertama. Hanya audio yang diproses; tidak diunggah. Berbagi tab dihentikan setelah rekaman selesai.</p>
+</section>
 <div class="form-row youtube-segment"><label>Mulai A <input type="number" id="ytStart" min="0" max="43200" value="0"> detik</label><label>Akhir B <input type="number" id="ytEnd" min="1" max="43200" value="10"> detik</label><button id="applySegment">Putar A–B</button></div>
 <div class="tap-box"><button id="tapTempo">Tap beat</button><strong id="tapResult">— BPM</strong><button id="useTapTempo" disabled>Pakai BPM</button></div>
 <div id="youtubeExternal"></div>
@@ -68,4 +82,6 @@
 <script src="./assets/synth-fallback.js"></script>
 <script src="./assets/sound-kits.js"></script>
 <script src="./assets/app.js"></script>
-<script src="./assets/youtube-workspace.js"></script></body></html>
+<script src="./assets/youtube-workspace.js"></script>
+<script src="./assets/transcription-core.js"></script>
+<script src="./assets/youtube-generator.js"></script></body></html>
