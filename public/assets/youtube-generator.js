@@ -3,7 +3,6 @@
   const ui = id => document.getElementById(id);
   let capture = null;
   let pending = false;
-  let candidate = null;
   let token = 0;
   let locked = [];
   const api = { isCapturing: false };
@@ -24,7 +23,7 @@
   }
   function lockApp(on) {
     if (on) {
-      const ids = ['play','reset','pattern','previewDraft','recordMidi','startSession','loadYoutube','applySegment','bpm','slower','faster','ytCaptureBpm','ytCaptureGrid','ytCaptureBars','ytCaptureMode','ytCaptureSensitivity','ytCaptureAlign','ytCaptureUseBpm','ytApplyCapture'];
+      const ids = ['play','reset','pattern','previewDraft','recordMidi','startSession','loadYoutube','applySegment','bpm','slower','faster','ytCaptureBpm','ytCaptureGrid','ytCaptureBars','ytCaptureMode','ytCaptureSensitivity','ytCaptureUseBpm','ytCaptureDuration','songFile','songImport','songAnalyze','songPractice','songPreview','songTempo'];
       locked = ids.map(id => ({ node: ui(id), disabled: ui(id)?.disabled }));
       for (const { node } of locked) if (node) node.disabled = true;
       if (ui('midiMonitor')) { locked.push({ node: ui('midiMonitor'), disabled: ui('midiMonitor').disabled, checked: ui('midiMonitor').checked }); ui('midiMonitor').checked = false; ui('midiMonitor').disabled = true; }
@@ -49,9 +48,6 @@
     ui('ytLevel').value = 0;
     ui('ytCaptureSource').textContent = 'Audio terputus · tidak ada tab yang sedang direkam';
     buttons();
-  }
-  function config() {
-    return DrumTranscription.captureConfig({ bpm: ui('ytCaptureBpm').value, grid: ui('ytCaptureGrid').value, bars: ui('ytCaptureBars').value, mode: ui('ytCaptureMode').value, sensitivity: ui('ytCaptureSensitivity').value, align: ui('ytCaptureAlign').checked });
   }
   async function connectAudio() {
     if (pending || capture) return;
@@ -104,7 +100,7 @@
         if (state.recording) node.port.postMessage({ type: 'stop' });
         else { release(); message('Berbagi audio dihentikan. Hubungkan ulang untuk mencoba lagi.'); }
       };
-      message('Audio terhubung. Putar bagian YouTube yang diinginkan; pastikan meter bergerak. Periksa BPM, lalu tekan Mulai tangkap.');
+      message('Audio terhubung. Putar bagian YouTube yang diinginkan; pastikan meter bergerak. Tekan Mulai tangkap. BPM dicari setelah rekaman selesai.');
     } catch (error) {
       if (stream) stream.getTracks().forEach(track => track.stop());
       if (context && context.state !== 'closed') context.close().catch(() => {});
@@ -114,7 +110,7 @@
   function begin() {
     if (!capture || api.isCapturing) return;
     if (recording || session) { message('Akhiri rekaman MIDI atau sesi latihan dahulu.', true); return; }
-    let options; try { options = config(); } catch (error) { message(error.message, true); return; }
+    const options = {duration:Number(ui('ytCaptureDuration').value)};if(![15,30,60,120,300].includes(options.duration)){message('Pilih durasi rekaman yang valid.',true);return;}globalThis.DrumSongLab?.pausePreview();
     stop();
     capture.config = options;
     capture.chunks = []; capture.frames = 0; capture.recording = true;
@@ -132,25 +128,12 @@
     if (capture !== state || !state.recording) return;
     state.recording = false;
     const samples = new Float32Array(state.frames);
-    let at = 0; for (const chunk of state.chunks) { samples.set(chunk, at); at += chunk.length; }
-    const rate = state.context.sampleRate, options = state.config, id = state.id;
-    const analysisToken = token;
-    release();
-    message('Menganalisis serangan bunyi dan menyusun draf…');
-    await new Promise(resolve => setTimeout(resolve, 0));
-    if (analysisToken !== token) return;
-    try {
-      candidate = DrumTranscription.makeDraft(samples, rate, options, id ? 'YouTube ' + id + ' · DRAF AUDIO' : 'Audio tab · DRAF AUDIO', 'Audio tab pilihan pengguna' + (id ? ' · referensi https://www.youtube.com/watch?v=' + id : ''));
-      renderCandidate();
-      ui('ytCaptureProgress').value = 1;
-      message('Draf siap: ' + candidate.notes + ' not perkiraan. Tekan Gunakan di editor untuk mengganti draf saat ini. BPM dan ketukan pertama perlu kamu periksa.');
-    } catch (error) { message('Belum dapat membuat draf: ' + error.message, true); }
-  }
-  function renderCandidate() {
-    const result = ui('ytCaptureResult'); result.hidden = false;
-    ui('ytCaptureSummary').textContent = candidate.notes + ' not · ' + candidate.config.bpm + ' BPM · ' + candidate.config.bars + ' bar · ' + candidate.capturedSeconds.toFixed(1) + ' detik audio';
-    const counts = Object.entries(candidate.counts).filter(([, n]) => n).map(([part, n]) => DRUM_PARTS[part] + ': ' + n).join(' · ');
-    ui('ytCaptureCounts').textContent = counts + (candidate.config.align ? ' · awal digeser ' + candidate.offset.toFixed(2) + ' detik ke onset pertama' : '') + (candidate.dropped ? ' · ' + candidate.dropped + ' onset di luar grid' : '');
+    let at=0;for(const chunk of state.chunks){samples.set(chunk,at);at+=chunk.length;}
+    const rate=state.context.sampleRate,id=state.id,analysisToken=token;
+    release();message('Rekaman selesai. Menyiapkan waveform dan kandidat tempo…');
+    await new Promise(resolve=>setTimeout(resolve,0));if(analysisToken!==token)return;
+    try{await DrumSongLab.setRecording(samples,rate,{id,source:'Audio tab pilihan pengguna'+(id?' · https://www.youtube.com/watch?v='+id:'')});message('Rekaman tersimpan di Song Lab. Pilih bagian dan awal bar, lalu buat lima level latihan.');}
+    catch(error){message('Rekaman belum dapat digunakan: '+error.message,true);}
   }
   ui('ytConnectAudio').addEventListener('click', connectAudio);
   ui('ytOpenExternal').addEventListener('click', () => {
@@ -160,18 +143,12 @@
     if (!capture) ui('ytCaptureTarget').value = 'other';
     message(capture ? 'Tab YouTube dibuka. Sumber audio saat ini tetap sama; tekan Ganti / putuskan sumber lalu pilih tab baru.' : 'Putar video di tab YouTube yang baru dibuka. Kembali ke tab app ini, lalu tekan Pilih tab audio dan pilih tab YouTube tersebut.');
   });
-  ui('ytUseLocalAudio').addEventListener('click', () => showTool('audio', true));
+  ui('ytUseLocalAudio').addEventListener('click', () => ui('songFile').click());
   ui('ytBeginCapture').addEventListener('click', begin);
   ui('ytFinishCapture').addEventListener('click', () => { if (capture?.recording) capture.node.port.postMessage({ type: 'stop' }); });
   ui('ytCancelCapture').addEventListener('click', () => { token++; pending = false; release(); message('Capture dibatalkan. Tidak ada catatan yang diganti.'); });
   ui('ytCaptureUseBpm').addEventListener('click', () => { ui('ytCaptureBpm').value = bpm(); });
   ui('useTapTempo').addEventListener('click', () => { if (!api.isCapturing) ui('ytCaptureBpm').value = bpm(); });
-  ui('ytApplyCapture').addEventListener('click', () => {
-    if (!candidate) return;
-    loadDraft(candidate.pattern); ui('bpm').value = candidate.config.bpm; activateDraft(); showTool('youtube');
-    status('#editorStatus', 'DRAF DARI AUDIO TAB · ' + candidate.notes + ' not perkiraan. Dengarkan dan koreksi sebelum Simpan pola. Ini bukan partitur terverifikasi.');
-    document.querySelector('.youtube-notes-column').scrollTop = 0;
-  });
   ui('ytCaptureBpm').value = bpm();
   window.addEventListener('beforeunload', release);
   buttons();

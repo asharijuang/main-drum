@@ -1,4 +1,5 @@
-/* Local, heuristic rhythm drafts. Deliberately not labelled as an AI transcription. */
+/* Shared capture options and legacy short-clip API. Song Lab long recordings use
+   song-core.js/song-lab.js; the old helper's 30-second limit is not the recorder limit. */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory(require('./rhythm-core.js'));else root.DrumTranscription=factory(root.DrumCore);})(globalThis,function(core){
   'use strict';
   function displayOptions(target = 'other') {

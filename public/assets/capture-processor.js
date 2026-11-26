@@ -12,7 +12,7 @@ class DrumCaptureProcessor extends AudioWorkletProcessor {
       if (data.type === 'start') {
         this.offset = 0;
         this.frames = 0;
-        this.limit = Math.max(1, Math.min(sampleRate * 30, Math.round(data.frames)));
+        this.limit = Math.max(1, Math.min(sampleRate * 300, Math.round(data.frames)));
         this.armed = true;
       } else if (data.type === 'stop' && this.armed) this.finish();
     };

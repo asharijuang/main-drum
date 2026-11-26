@@ -9,3 +9,8 @@ test('manual worklet stop flushes a partial capture exactly once',()=>{
  const p=processor();p.port.onmessage({data:{type:'start',frames:48000}});p.process([[new Float32Array(128).fill(.2)]],[[]]);p.port.onmessage({data:{type:'stop'}});p.port.onmessage({data:{type:'stop'}});
  assert.equal(p.messages.filter(m=>m.type==='done').length,1);assert.equal(p.messages.at(-1).frames,128);
 });
+test('capture processor permits more than one minute instead of truncating at 30 seconds',()=>{
+ const p=processor(),seconds=65,frames=48000*seconds;p.port.onmessage({data:{type:'start',frames}});
+ const block=new Float32Array(48000).fill(.1);for(let i=0;i<seconds;i++)p.process([[block]],[[]]);
+ assert.equal(p.messages.at(-1).frames,frames);assert.equal(p.messages.at(-1).type,'done');
+});

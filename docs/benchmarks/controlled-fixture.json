@@ -1,0 +1,66 @@
+{
+  "description": "12-second synthetic music mixture of real acoustic kick/snare/hi-hat recordings; rr2 takes held out from rr1 templates. Bass tone and harmonic distractor added. This is not a benchmark on real songs.",
+  "toleranceSeconds": 0.05,
+  "truthEvents": 73,
+  "baseline": {
+    "tp": 47,
+    "fp": 0,
+    "fn": 26,
+    "precision": 1,
+    "recall": 0.6438356164383562,
+    "f1": 0.7833333333333334
+  },
+  "multiBand": {
+    "tp": 47,
+    "fp": 47,
+    "fn": 26,
+    "precision": 0.5,
+    "recall": 0.6438356164383562,
+    "f1": 0.5628742514970061
+  },
+  "spectral": {
+    "tp": 72,
+    "fp": 12,
+    "fn": 1,
+    "precision": 0.8571428571428571,
+    "recall": 0.9863013698630136,
+    "f1": 0.9171974522292993
+  },
+  "fullKitDiagnostic": {
+    "tp": 66,
+    "fp": 109,
+    "fn": 7,
+    "precision": 0.37714285714285717,
+    "recall": 0.9041095890410958,
+    "f1": 0.5322580645161291
+  },
+  "fullKitNote": "Eight-class template expansion adds many false positives on this fixture; it is not the default UI model.",
+  "spectralMilliseconds": 51,
+  "tempo": {
+    "bpm": 120,
+    "candidates": [
+      {
+        "bpm": 120,
+        "strength": 0.92
+      },
+      {
+        "bpm": 60,
+        "strength": 0.95
+      },
+      {
+        "bpm": 80,
+        "strength": 0.22
+      },
+      {
+        "bpm": 48,
+        "strength": 0.23
+      }
+    ],
+    "firstBeat": 0,
+    "period": 0.5,
+    "strength": 0.92,
+    "variable": false,
+    "frameRate": 100,
+    "warning": "Saran beat, bukan kepastian hitungan 1. Periksa tempo setengah/dobel dan awal bar."
+  }
+}
