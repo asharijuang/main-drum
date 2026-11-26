@@ -1,0 +1,64 @@
+DRUM COMPANION - STUDIO PEMULA
+
+CARA MEMBUKA
+1. Ekstrak seluruh isi ZIP ke satu folder.
+2. Untuk langsung mencoba, buka buku-drum-interaktif.html di Chrome atau Edge.
+3. Untuk MIDI, jalankan mulai-drum-app.cmd lalu buka http://127.0.0.1:8765
+   di Chrome/Edge desktop. Launcher memakai Node.js yang terpasang di komputer.
+4. Tutup jendela launcher untuk menghentikan server lokal.
+   App hanya dilayani ke komputer ini, bukan dipublikasikan ke internet.
+
+FITUR
+- Buku drum 16 bab dengan player notasi Mini / Setengah / Penuh.
+- Pola latihan bersuara, metronom, kontrol BPM, dan pemilihan lapisan instrumen.
+- Editor grid 4/4 untuk 1-4 bar: eighth, sixteenth, triplet, sextuplet.
+- MIDI detector, pad learn, velocity, persiapan satu bar, dan rekaman ke notasi.
+- Uji pad keyboard tanpa e-drum: aktifkan di panel mapping MIDI.
+- Simpan pola di browser, pencarian judul, ekspor JSON/MIDI dan impor JSON.
+- Pencarian sumber partitur lewat tautan web / Songsterr / pelajaran YouTube.
+- YouTube study: embed video, titik A-B, tap tempo, dan draf manual.
+- File audio lokal ke draf onset, dengan tebakan instrumen opsional.
+- Timer latihan dan jurnal sesi lokal.
+
+REKAM MIDI
+Hubungkan e-drum lewat USB, pilih input, cek mapping, lalu tekan Rekam.
+Tunggu empat klik persiapan. BPM diambil dari player saat rekaman dimulai.
+Hasil dibulatkan ke grid yang dipilih; hit sangat dekat batas akhir bisa
+keluar dari bar. Notasi hasil rekaman bisa dikoreksi sebelum disimpan.
+MIDI memakai velocity, bukan menebak bunyi dari mikrofon. Sticking R/L tidak
+dapat diketahui hanya dari nomor pad standar. Custom hi-hat pedal/CC dan
+deteksi choke belum diinterpretasikan; gunakan mapping note-on untuk pad.
+
+TENTANG LAGU DAN YOUTUBE
+Pencarian dalam app mencakup latihan bawaan dan koleksi yang disimpan.
+Belum ada database partitur lagu lengkap atau API katalog berlisensi.
+Tautan pencarian membawa ke sumber eksternal, bukan hasil terverifikasi.
+YouTube dipakai untuk belajar manual. App tidak mengambil atau memisahkan
+audio YouTube, dan belum menghasilkan notasi otomatis langsung dari link.
+Fitur A-B memuat bagian video; tekan tombolnya lagi untuk mengulang.
+Player notasi belum disinkronkan dengan waktu video.
+Internet diperlukan untuk YouTube dan pencarian sumber eksternal.
+
+AUDIO KE DRAF
+Gunakan rekaman yang jelas dan isi BPM dengan benar. Posisikan detik awal
+pada beat 1. Deteksi bekerja pada energi serangan bunyi dan bukan model AI.
+Pilihan semua onset ke snare lebih mudah diperiksa. Tebakan instrumen
+eksperimental bisa tertukar oleh bass, gitar, vokal, dan cymbal. Hasil selalu
+merupakan draf, bukan partitur lagu lengkap yang akurat. Maksimal 30 MB
+per file dan 30 detik / empat bar analisis, mana yang lebih pendek.
+
+DATA DAN CADANGAN
+Pola, mapping dan jurnal disimpan di browser yang sama. Mode privat atau
+pembersihan cache bisa menghapusnya. Ekspor JSON tiap pola untuk cadangan.
+Data file lokal dan localhost adalah penyimpanan yang berbeda; ekspor/impor
+JSON untuk memindahkan pola. Audio diproses lokal dan tidak diunggah.
+
+PENGUJIAN
+Sudah diuji di Edge: edit/simpan/cari, persistensi, MIDI simulasi, pad learn,
+rekaman ke notasi, MIDI/JSON, WAV sintetis ke draf, timer/jurnal, ukuran
+player dan viewport ponsel. Belum diuji dengan e-drum fisik. Embed YouTube
+diuji dengan respons pemutar simulasi; video asli dapat menolak embed.
+
+REFERENSI FITUR BROWSER
+https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
+https://developers.google.com/youtube/iframe_api_reference
