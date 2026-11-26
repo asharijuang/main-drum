@@ -25,6 +25,7 @@ public/sounds/kit-ku/
     snare.wav
     hihat.wav
     tom.wav
+    tom2.wav
     floor.wav
     ride.wav
     crash.wav
@@ -77,8 +78,9 @@ Referensi: [Intro to SFZ](https://sfzformat.com/tutorials/basics/) dan [SFZ drum
 | Kick | 35, 36 | 36 |
 | Snare | 38, 40 | 38 |
 | Hi-hat | 42, 44, 46 | 42 |
-| High tom | 47, 48, 50 | 50 |
-| Floor tom | 41, 43, 45 | 41 |
+| Tom 1 (tinggi) | 48, 50 | 48 |
+| Tom 2 (sedang) | 45, 47 | 45 |
+| Tom 3 (rendah/floor) | 41, 43 | 43 |
 | Ride | 51, 53, 59 | 51 |
 | Crash | 49, 52, 55, 57 | 49 |
 
@@ -118,7 +120,7 @@ File `.sf2`, `.sf3`, `.nki`, `.h2drumkit`, atau plugin VST tidak bisa diimpor la
 
 ## Kit bawaan dan sumber sample
 
-**Big Rusty · Acoustic Starter** memakai 12 rekaman dari [Big Rusty Drums, Karoryfer Samples](https://github.com/sfzinstruments/karoryfer.big-rusty-drums), berlisensi **CC0-1.0**. Kit kecil ini bukan seluruh library aslinya.
+**Big Rusty · Acoustic Starter** memakai 13 rekaman dari [Big Rusty Drums, Karoryfer Samples](https://github.com/sfzinstruments/karoryfer.big-rusty-drums), berlisensi **CC0-1.0**. Kit kecil ini bukan seluruh library aslinya.
 
 - Kick, snare dan hi-hat punya dua variasi round-robin.
 - Snare punya layer soft dan hard.
@@ -136,3 +138,13 @@ Untuk mencari pack lain, mulai dari [daftar instrumen drum SFZ](https://sfzinstr
 - Pastikan huruf besar/kecil nama file sama, terutama saat nanti dihosting di Linux.
 - Gunakan `npm start` jika kit bawaan tidak dapat dimuat dari `file://`.
 - Jika muncul **Suara darurat**, app sedang memakai synthesizer cadangan, bukan rekaman WAV.
+
+## E-drum dengan tiga tom
+
+Diagram, editor, MIDI recorder, ekspor MIDI, dan sound kit sekarang membedakan Tom 1, Tom 2, dan Tom 3. Tom 1 bernada tinggi, Tom 2 sedang, dan Tom 3 rendah. Ketiga tom memakai rekaman berbeda.
+
+Default Tom 1/2/3 pada Roland TD-07 adalah 48/45/43; Yamaha DTX400 menggunakan 48/47/43. App menerima kedua variasi Tom 2. Ini contoh model tertentu, bukan jaminan semua modul memakai nomor sama. Gunakan pad learn untuk pengaturan lain. Mapping pribadi tetap diprioritaskan; tekan Reset mapping jika ingin kembali ke default app.
+
+Ekspor MIDI memakai 48/45/43. Data pola lama tetap didukung: field tom = Tom 1, tom2 = Tom 2, floor = Tom 3. File PDF lama tetap menjadi referensi dasar dan belum diterbitkan ulang dalam pembaruan app ini.
+
+Sumber: [Roland TD-07 note map](https://support.roland.com/hc/en-us/articles/24553430488091-TD-07-Default-MIDI-Note-Map), [Yamaha DTX400 MIDI reference](https://data.yamaha.com/files/download/other_assets/6/328196/dtx400k430k450k_en_mr_a0.pdf).

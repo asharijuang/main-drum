@@ -95,4 +95,6 @@ Lisensi belum ditentukan (`UNLICENSED`); repo tidak otomatis memberikan izin pen
 
 ## Sound kits yang bisa diganti
 
-Suara drum bawaan sekarang memakai 12 sampel akustik WAV dari Big Rusty Drums (CC0), dengan SFZ sebagai mapping. Buka tab Sound kits untuk memilih atau mengimpor folder kit. Panduan lengkap: [Mengganti sound bundle](docs/SOUND-KITS.md). File sampel ada di public/sounds/, terpisah dari kode UI. Dukungan SFZ terbatas pada subset drum yang didokumentasikan; synthesizer tersedia sebagai cadangan. Kredit sampel: THIRD_PARTY_NOTICES.md.
+Suara drum bawaan sekarang memakai 13 sampel akustik WAV dari Big Rusty Drums (CC0), dengan SFZ sebagai mapping. Buka tab Sound kits untuk memilih atau mengimpor folder kit. Panduan lengkap: [Mengganti sound bundle](docs/SOUND-KITS.md). File sampel ada di public/sounds/, terpisah dari kode UI. Dukungan SFZ terbatas pada subset drum yang didokumentasikan; synthesizer tersedia sebagai cadangan. Kredit sampel: THIRD_PARTY_NOTICES.md.
+
+E-drum: Tom 1, Tom 2, dan Tom 3 terpisah di diagram, editor, MIDI, notasi, serta sound kit. Mapping default menerima Tom 1 48/50, Tom 2 45/47, dan Tom 3 41/43; gunakan pad learn bila modul berbeda.

@@ -4,7 +4,11 @@
   else root.DrumCore=factory();
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
-const partNames={kick:'Kick',sn:'Snare',hh:'Hi-hat',tom:'High tom',floor:'Floor tom',ride:'Ride',crash:'Crash'};
+const DRUM_PARTS=Object.freeze({kick:'Kick',sn:'Snare',hh:'Hi-hat',tom:'Tom 1',tom2:'Tom 2',floor:'Tom 3',ride:'Ride',crash:'Crash'});
+const MIDI_DRUM_MAP=Object.freeze({35:'kick',36:'kick',38:'sn',40:'sn',42:'hh',44:'hh',46:'hh',48:'tom',50:'tom',45:'tom2',47:'tom2',41:'floor',43:'floor',51:'ride',53:'ride',59:'ride',49:'crash',52:'crash',55:'crash',57:'crash'});
+const MIDI_EXPORT_NOTES=Object.freeze({kick:36,sn:38,hh:42,tom:48,tom2:45,floor:43,ride:51,crash:49});
+const STAFF_POSITIONS=Object.freeze({kick:104,sn:84,hh:64,tom:76,tom2:80,floor:96,ride:68,crash:56});
+const partNames=DRUM_PARTS;
 function events(p,i){
  const out=[];
  for(const k of Object.keys(partNames))if((p[k]||[]).includes(i))out.push([k,p.velocities?.[k+':'+i]??((p.accent||[]).includes(i)?1:.72)]);
@@ -34,7 +38,7 @@ function quantizeHits(hits,tempo,q,bars,name,source){const p=cleanPattern({name,
 
 function variableLength(n){const out=[n&127];while((n>>=7)>0)out.unshift((n&127)|128);return out;}
 
-function createMidi(p,tempo){const ticks=480,tempoUs=Math.round(60000000/tempo),notes={kick:36,sn:38,hh:42,tom:50,floor:41,ride:51,crash:49},all=[];for(let i=0;i<p.steps;i++)for(const [k,v]of events(p,i)){const t=Math.round(i*ticks/p.perBeat);all.push({t,data:[0x99,notes[k],Math.max(1,Math.round(v*127))],off:1});all.push({t:t+Math.max(1,Math.round(ticks/p.perBeat*.45)),data:[0x89,notes[k],0],off:0});}all.sort((a,b)=>a.t-b.t||a.off-b.off);let track=[0,0xff,0x51,3,(tempoUs>>16)&255,(tempoUs>>8)&255,tempoUs&255,0,0xff,0x58,4,4,2,24,8],last=0;for(const e of all){track.push(...variableLength(e.t-last),...e.data);last=e.t;}track.push(...variableLength(Math.max(0,Math.round(p.steps*ticks/p.perBeat)-last)),0xff,0x2f,0);const n=track.length;return new Uint8Array([77,84,104,100,0,0,0,6,0,0,0,1,1,224,77,84,114,107,(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255,...track]);}
+function createMidi(p,tempo){const ticks=480,tempoUs=Math.round(60000000/tempo),notes=MIDI_EXPORT_NOTES,all=[];for(let i=0;i<p.steps;i++)for(const [k,v]of events(p,i)){const t=Math.round(i*ticks/p.perBeat);all.push({t,data:[0x99,notes[k],Math.max(1,Math.round(v*127))],off:1});all.push({t:t+Math.max(1,Math.round(ticks/p.perBeat*.45)),data:[0x89,notes[k],0],off:0});}all.sort((a,b)=>a.t-b.t||a.off-b.off);let track=[0,0xff,0x51,3,(tempoUs>>16)&255,(tempoUs>>8)&255,tempoUs&255,0,0xff,0x58,4,4,2,24,8],last=0;for(const e of all){track.push(...variableLength(e.t-last),...e.data);last=e.t;}track.push(...variableLength(Math.max(0,Math.round(p.steps*ticks/p.perBeat)-last)),0xff,0x2f,0);const n=track.length;return new Uint8Array([77,84,104,100,0,0,0,6,0,0,0,1,1,224,77,84,114,107,(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255,...track]);}
 
 function youtubeId(value){try{const u=new URL(value.trim());if(!['https:','http:'].includes(u.protocol))return null;const host=u.hostname.toLowerCase().replace(/^www\./,'');let id;if(host==='youtu.be')id=u.pathname.split('/')[1];else if(['youtube.com','m.youtube.com','youtube-nocookie.com'].includes(host))id=u.pathname==='/watch'?u.searchParams.get('v'):['embed','shorts','live'].includes(u.pathname.split('/')[1])?u.pathname.split('/')[2]:null;return /^[A-Za-z0-9_-]{11}$/.test(id||'')?id:null;}catch{return null;}}
 
@@ -52,5 +56,5 @@ function detectOnsets(samples,sampleRate,sensitivity=3,mode='sn'){
  }
  return hits;
 }
-return Object.freeze({safeText,countLabel,cleanPattern,parseMidiMessage,quantizeHits,variableLength,createMidi,youtubeId,estimateTap,detectOnsets,patternEvents:events});
+return Object.freeze({DRUM_PARTS,MIDI_DRUM_MAP,MIDI_EXPORT_NOTES,STAFF_POSITIONS,safeText,countLabel,cleanPattern,parseMidiMessage,quantizeHits,variableLength,createMidi,youtubeId,estimateTap,detectOnsets,patternEvents:events});
 });

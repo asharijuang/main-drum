@@ -1,8 +1,8 @@
 /* SFZ drum subset + Web Audio sampler. No application or DOM dependencies. */
-(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.DrumSamples=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
+(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory(require('./rhythm-core.js'));else root.DrumSamples=factory(root.DrumCore);})(typeof globalThis!=='undefined'?globalThis:this,function(core){
 'use strict';
-const NOTES={35:'kick',36:'kick',38:'sn',40:'sn',42:'hh',44:'hh',46:'hh',48:'tom',50:'tom',45:'floor',47:'tom',41:'floor',43:'floor',51:'ride',53:'ride',59:'ride',49:'crash',52:'crash',55:'crash',57:'crash'};
-const PARTS=['kick','sn','hh','tom','floor','ride','crash'];
+const NOTES=core.MIDI_DRUM_MAP;
+const PARTS=Object.keys(core.DRUM_PARTS);
 const SUPPORTED=new Set(['sample','key','lokey','hikey','lovel','hivel','volume','pan','seq_length','seq_position','group','off_by','off_mode','loop_mode','pitch_keytrack','amp_veltrack','default_path']);
 function safePath(value){
  const s=String(value).replace(/\\/g,'/');

@@ -17,9 +17,11 @@
 <region> sample=hihat-rr1.wav seq_length=2 seq_position=1
 <region> sample=hihat-rr2.wav seq_length=2 seq_position=2
 
-<group> key=50 volume=-4
+<group> key=48 volume=-4
 <region> sample=tom-rr1.wav
-<group> key=41 volume=-4
+<group> key=45 volume=-4
+<region> sample=tom2-rr1.wav
+<group> key=43 volume=-4
 <region> sample=floor-rr1.wav
 <group> key=51 volume=-9
 <region> sample=ride-rr1.wav

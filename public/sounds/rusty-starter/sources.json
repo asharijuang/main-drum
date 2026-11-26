@@ -77,6 +77,12 @@
       "source": "Samples/crash_17/cr/cl/cr_vl4_rr1.flac",
       "sha": "097e5db0c92f8d1db2b5748a9db75df6a3a9f701",
       "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/crash_17/cr/cl/cr_vl4_rr1.flac"
+    },
+    {
+      "name": "tom2-rr1",
+      "source": "Samples/tom_15/center/cl/t15_vl6_rr1.flac",
+      "sha": "cbde86851d5713295aad676dbe0eaac3a7afb5ba",
+      "url": "https://raw.githubusercontent.com/sfzinstruments/karoryfer.big-rusty-drums/f07ce00df34a46b6b08375be56fe116cf15782bc/Samples/tom_15/center/cl/t15_vl6_rr1.flac"
     }
   ]
 }

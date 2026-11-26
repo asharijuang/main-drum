@@ -1,9 +1,9 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {parseSFZ,selectRegions,safePath,midiKey}=require('../public/assets/sample-kit.js');
 const kitRoot=path.resolve(__dirname,'../public/sounds/rusty-starter');
-test('bundled SFZ maps all seven drum parts to existing PCM WAV recordings',()=>{
+test('bundled SFZ maps all eight drum parts to existing PCM WAV recordings',()=>{
  const kit=parseSFZ(fs.readFileSync(path.join(kitRoot,'kit.sfz'),'utf8'));
- assert.deepEqual(kit.missing,[]);assert.deepEqual(kit.warnings,[]);assert.equal(kit.regions.length,12);
+ assert.deepEqual(kit.missing,[]);assert.deepEqual(kit.warnings,[]);assert.equal(kit.regions.length,13);
  for(const r of kit.regions){const b=fs.readFileSync(path.join(kitRoot,r.sample));assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WAVE');assert.equal(b.readUInt16LE(20),1);assert.equal(b.readUInt16LE(34),16);assert.equal(b.readUInt32LE(24),48000);}
 });
 test('SFZ velocity layers and round-robin pick different acoustic takes',()=>{
