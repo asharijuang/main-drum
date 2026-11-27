@@ -109,12 +109,12 @@ const scoreHelp=document.createElement('p');scoreHelp.id='scoreHelp';scoreHelp.t
 const oldNotationHeading=Array.from(document.querySelectorAll('#lab h3')).find(n=>n.textContent.includes('Notasi'));
 if(oldNotationHeading)oldNotationHeading.replaceWith(scoreHelp);
 for(const selector of ['#playerDock > .player-track','#playerDock > .player-center','#playerDock > .player-options']){const part=document.querySelector(selector);if(part)$('#scoreFooter').append(part);}
-function setPlayerSize(size){if(!['mini','half','full'].includes(size))return;$('#playerDock').dataset.size=size;document.body.classList.toggle('score-expanded',size==='full');document.querySelectorAll('[data-size-button]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sizeButton===size)));$('#scoreModeLabel').textContent=size==='mini'?'Player ringkas':'Ikuti pukulannya';try{localStorage.setItem('drum-player-size',size);}catch{}}
+function setPlayerSize(size, persistSize=true){if(!['mini','half','full'].includes(size))return;$('#playerDock').dataset.size=size;document.body.classList.toggle('score-expanded',size==='full');document.querySelectorAll('[data-size-button]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sizeButton===size)));$('#scoreModeLabel').textContent=size==='mini'?'Player ringkas':'Ikuti pukulannya';try{if(persistSize)localStorage.setItem('drum-player-size',size);}catch{}}
 function updateScore(index,bar){const p=patterns[selected];$('#scoreBar').textContent='Bar '+bar;$('#scoreBeat').textContent=index<0?'Siap latihan':'Beat '+(Math.floor(index/p.perBeat)+1);$('#scoreSticking').textContent=index<0?p.name:(p.stick?'Sticking '+p.stick[index]+' · ':'')+(p.perBeat>1?'Slot '+(index%p.perBeat+1)+' / '+p.perBeat:p.labels[index]);
  if(index>=0&&$('#playerDock').dataset.size!=='mini'){const view=$('#scoreViewport'),note=$('#notation');if(view.clientWidth&&note.scrollWidth>view.clientWidth){const target=(92+index*710/p.steps)/850*note.scrollWidth;view.scrollLeft=Math.max(0,target-view.clientWidth*.35);}}
 }
 document.querySelectorAll('[data-size-button]').forEach(b=>b.addEventListener('click',()=>setPlayerSize(b.dataset.sizeButton)));
-document.addEventListener('keydown',e=>{if(e.code==='Escape'&&$('#playerDock').dataset.size==='full')setPlayerSize('half');});
+document.addEventListener('keydown',e=>{if(e.code==='Escape'&&!document.body.classList.contains('collection-reading')&&$('#playerDock').dataset.size==='full')setPlayerSize('half');});
 try{setPlayerSize(localStorage.getItem('drum-player-size')||'half');}catch{setPlayerSize('half');}
 updateScore(-1,1);
 
@@ -133,14 +133,15 @@ function status(id,message,error=false){$(id).textContent=message;$(id).classLis
 function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);}
 function installPattern(key,p,tempo){patterns[key]=p;let option=Array.from($('#pattern').options).find(o=>o.value===key);if(!option){option=document.createElement('option');option.value=key;$('#pattern').append(option);}option.textContent=p.name;if(tempo)$('#bpm').value=tempo;}
 function showTool(key,scroll=false){
- const allowed=['editor','midi','library','youtube','audio','session','sound'];if(!allowed.includes(key))return;
+ const allowed=['editor','midi','library','collection','youtube','audio','session','sound'];if(!allowed.includes(key))return;
  if($('#playerDock').dataset.size==='full')setPlayerSize('half');setMode('full');
  for(const name of allowed){$('#tool-'+name).hidden=name!==key;$('#tab-'+name).setAttribute('aria-selected',String(name===key));$('#tab-'+name).tabIndex=name===key?0:-1;}
+ if(key==='collection')$('#tool-collection').dispatchEvent(new Event('collection-open'));
  if(key==='library')renderLibrary();closeSidebar();if(scroll)$('#workspace').scrollIntoView({block:'start'});
 }
 document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>showTool(b.dataset.tool)));
-document.querySelector('.tool-tabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;const keys=['editor','midi','library','youtube','audio','session','sound'],index=keys.indexOf(e.target.dataset.tool);if(index<0)return;e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?keys.length-1:(index+(e.key==='ArrowRight'?1:-1)+keys.length)%keys.length;showTool(keys[next]);$('#tab-'+keys[next]).focus();});
-const toolsNav=document.createElement('div');toolsNav.className='app-links';for(const [key,label]of [['editor','Buat pola'],['midi','MIDI recorder'],['library','Cari lagu & koleksi'],['youtube','YouTube study'],['audio','Audio ke draf'],['session','Latihan harian']]){const a=document.createElement('a');a.href='#workspace';a.textContent=label;a.addEventListener('click',()=>showTool(key,true));toolsNav.append(a);}$('#sidebarChapters').before(toolsNav);
+document.querySelector('.tool-tabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;const keys=['editor','midi','library','collection','youtube','audio','session','sound'],index=keys.indexOf(e.target.dataset.tool);if(index<0)return;e.preventDefault();const next=e.key==='Home'?0:e.key==='End'?keys.length-1:(index+(e.key==='ArrowRight'?1:-1)+keys.length)%keys.length;showTool(keys[next]);$('#tab-'+keys[next]).focus();});
+const toolsNav=document.createElement('div');toolsNav.className='app-links';for(const [key,label]of [['editor','Buat pola'],['midi','MIDI recorder'],['library','Cari lagu & koleksi'],['collection','Koleksi notasi'],['youtube','YouTube study'],['audio','Audio ke draf'],['session','Latihan harian']]){const a=document.createElement('a');a.href='#workspace';a.textContent=label;a.addEventListener('click',()=>showTool(key,true));toolsNav.append(a);}$('#sidebarChapters').before(toolsNav);
 
 // Event precision and dynamics are retained for user recordings.
 const bookEvents=events;
