@@ -6,9 +6,82 @@
  function open(key){previousSize=$('#playerDock').dataset.size;choose(key);const saved=appData.patterns.find(x=>'saved_'+x.id===key);if(saved||patterns[key].bpm)$('#bpm').value=saved?.bpm||patterns[key].bpm;document.body.classList.add('collection-reading');setPlayerSize('full',false);drawPages();document.getElementById('collectionBack').focus();}
  window.openCollectionScore = open;
  const baseNotation=notation;
- function drawPages(){const p=patterns[selected],barSteps=p.barSteps||(p.meter==='6/8'?6:p.perBeat*Number(p.meter.split('/')[0])),pages=document.getElementById('collectionSheet');pages.replaceChildren();setSongMedia(p.song);document.getElementById('collectionTitle').textContent=p.name;document.getElementById('collectionInfo').textContent=p.info+' '+p.tip;
- for(let start=0;start<p.steps;start+=barSteps){const end=Math.min(p.steps,start+barSteps),bar={...p,steps:end-start,labels:p.labels.slice(start,end),velocities:{}};for(const k of [...Object.keys(partNames),'soft','accent'])bar[k]=(p[k]||[]).filter(i=>i>=start&&i<end).map(i=>i-start);if(p.stick)bar.stick=p.stick.slice(start,end);for(const [key,v]of Object.entries(p.velocities||{})){const [inst,at]=key.split(':');if(+at>=start&&+at<end)bar.velocities[inst+':'+(+at-start)]=v;}if(!p.velocities)delete bar.velocities;baseNotation(bar);const row=document.createElement('section');row.className='sheet-row';row.dataset.bar=start/barSteps;const label=document.createElement('p');label.textContent='Bar '+(start/barSteps+1);const svg=$('#notation svg').cloneNode(true);svg.querySelector('#playhead')?.remove();row.append(label,svg);pages.append(row);}baseNotation(p);}
- const baseUpdate=updateScore;updateScore=function(index,bar){baseUpdate(index,bar);if(index<0||!document.body.classList.contains('collection-reading'))return;const p=patterns[selected],n=p.barSteps||(p.meter==='6/8'?6:p.perBeat*Number(p.meter.split('/')[0]));document.querySelectorAll('.sheet-row').forEach((row,i)=>row.classList.toggle('playing',i===Math.floor(index/n)));const active=document.querySelector('.sheet-row.playing');if(active){let line=active.querySelector('.sheet-cursor');if(!line){line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('class','sheet-cursor');line.setAttribute('y1','32');line.setAttribute('y2','118');active.querySelector('svg').append(line);}const width=Math.max(850,140+n*36),x=92+(index%n)*Math.max(710,n*36)/n;line.setAttribute('x1',x);line.setAttribute('x2',x);}};
+ function drawPages(){const p=patterns[selected],barSteps=p.barSteps||(p.meter==='6/8'?6:p.perBeat*Number(p.meter.split('/')[0])),pages=document.getElementById('collectionSheet');activeRow = null;pages.style.removeProperty('--follow-space');pages.replaceChildren();setSongMedia(p.song);document.getElementById('collectionTitle').textContent=p.name;document.getElementById('collectionInfo').textContent=p.info+' '+p.tip;
+ for(let start=0;start<p.steps;start+=barSteps){const end=Math.min(p.steps,start+barSteps),bar={...p,steps:end-start,labels:p.labels.slice(start,end),velocities:{}};for(const k of [...Object.keys(partNames),'soft','accent'])bar[k]=(p[k]||[]).filter(i=>i>=start&&i<end).map(i=>i-start);if(p.stick)bar.stick=p.stick.slice(start,end);for(const [key,v]of Object.entries(p.velocities||{})){const [inst,at]=key.split(':');if(+at>=start&&+at<end)bar.velocities[inst+':'+(+at-start)]=v;}if(!p.velocities)delete bar.velocities;baseNotation(bar);const row=document.createElement('section');row.className='sheet-row';row.dataset.bar=start/barSteps;const label=document.createElement('p');label.textContent='Bar '+(start/barSteps+1);const svg=$('#notation svg').cloneNode(true);svg.querySelector('#playhead')?.remove();row.append(label,svg);pages.append(row);}
+   if (pages.children.length > 1) {
+     const preview = pages.firstElementChild.cloneNode(true);
+     preview.className = 'sheet-row loop-preview';
+     preview.removeAttribute('data-bar');
+     preview.querySelector('p').textContent = 'Berikutnya · kembali ke bar 1';
+     preview.hidden = true;
+     pages.append(preview);
+   }
+   baseNotation(p);
+ }
+ const sheet = $('#collectionSheet');
+ let activeRow = null;
+
+ // On desktop the notes column scrolls independently of the video.
+ // On a phone the reader contains both columns and owns the scrollbar.
+ function scoreScrollPanel() {
+   const column = sheet.closest('.youtube-notes-column');
+   return column.clientHeight && ['auto', 'scroll'].includes(getComputedStyle(column).overflowY)
+     && reader.classList.contains('with-video') ? column : reader;
+ }
+
+ function followRow(row, index, pattern, barSteps) {
+   const panel = scoreScrollPanel();
+   const lastBar = Math.ceil(pattern.steps / barSteps) - 1;
+   const barNumber = Math.floor(index / barSteps);
+   const multiBar = lastBar > 0;
+   if (activeRow !== row) {
+     activeRow?.classList.remove('playing');
+     row.classList.add('playing');
+     activeRow = row;
+   }
+   if (multiBar) {
+     // Extra room at both ends lets the first and last bars reach the center.
+     const margin = Math.ceil(panel.clientHeight / 2) + 'px';
+     if (sheet.style.getPropertyValue('--follow-space') !== margin) {
+       sheet.style.setProperty('--follow-space', margin);
+     }
+     const preview = sheet.querySelector('.loop-preview');
+     if (preview) preview.hidden = barNumber !== lastBar;
+     const bounds = row.getBoundingClientRect();
+     const middle = panel.getBoundingClientRect().top + panel.clientTop + panel.clientHeight / 2;
+     const offset = bounds.top + bounds.height / 2 - middle;
+     if (Math.abs(offset) > 1) panel.scrollTop += offset;
+   }
+
+   const svg = row.querySelector('svg');
+   let cursor = svg.querySelector('.sheet-cursor');
+   if (!cursor) {
+     cursor = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+     cursor.setAttribute('class', 'sheet-cursor');
+     cursor.setAttribute('y1', '32');
+     cursor.setAttribute('y2', '118');
+     svg.append(cursor);
+   }
+   const rowSteps = Math.min(barSteps, pattern.steps - barNumber * barSteps);
+   const x = scorePosition({steps:rowSteps}, index % barSteps);
+   cursor.setAttribute('x1', x);
+   cursor.setAttribute('x2', x);
+   if (row.scrollWidth > row.clientWidth) {
+     const viewport = row.getBoundingClientRect();
+     const offset = cursor.getBoundingClientRect().left - viewport.left - viewport.width / 2;
+     if (Math.abs(offset) > 1) row.scrollLeft += offset;
+   }
+ }
+
+ const baseUpdate = updateScore;
+ updateScore = function(index, bar) {
+   baseUpdate(index, bar);
+   if (index < 0 || sheet.hidden || !document.body.classList.contains('collection-reading')) return;
+   const p = patterns[selected];
+   const barSteps = p.barSteps || (p.meter === '6/8' ? 6 : p.perBeat * Number(p.meter.split('/')[0]));
+   const row = sheet.children[Math.floor(index / barSteps)];
+   if (row) followRow(row, index, p, barSteps);
+ };
  function closeReader() {
    stop();
    setSongMedia(null);

@@ -111,7 +111,6 @@ if(oldNotationHeading)oldNotationHeading.replaceWith(scoreHelp);
 for(const selector of ['#playerDock > .player-track','#playerDock > .player-center','#playerDock > .player-options']){const part=document.querySelector(selector);if(part)$('#scoreFooter').append(part);}
 function setPlayerSize(size, persistSize=true){if(!['mini','half','full'].includes(size))return;$('#playerDock').dataset.size=size;document.body.classList.toggle('score-expanded',size==='full');document.querySelectorAll('[data-size-button]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sizeButton===size)));$('#scoreModeLabel').textContent=size==='mini'?'Player ringkas':'Ikuti pukulannya';try{if(persistSize)localStorage.setItem('drum-player-size',size);}catch{}}
 function updateScore(index,bar){const p=patterns[selected];$('#scoreBar').textContent='Bar '+bar;$('#scoreBeat').textContent=index<0?'Siap latihan':'Beat '+(Math.floor(index/p.perBeat)+1);$('#scoreSticking').textContent=index<0?p.name:(p.stick?'Sticking '+p.stick[index]+' · ':'')+(p.perBeat>1?'Slot '+(index%p.perBeat+1)+' / '+p.perBeat:p.labels[index]);
- if(index>=0&&$('#playerDock').dataset.size!=='mini'){const view=$('#scoreViewport'),note=$('#notation');if(view.clientWidth&&note.scrollWidth>view.clientWidth){const target=(92+index*710/p.steps)/850*note.scrollWidth;view.scrollLeft=Math.max(0,target-view.clientWidth*.35);}}
 }
 document.querySelectorAll('[data-size-button]').forEach(b=>b.addEventListener('click',()=>setPlayerSize(b.dataset.sizeButton)));
 document.addEventListener('keydown',e=>{if(e.code==='Escape'&&!document.body.classList.contains('collection-reading')&&$('#playerDock').dataset.size==='full')setPlayerSize('half');});
@@ -176,7 +175,19 @@ const originalUpdateScore=updateScore;
 updateScore=function(index,bar){
  originalUpdateScore(index,bar);const p=patterns[selected],barSteps=p.barSteps||(p.meter==='6/8'?6:p.perBeat*Number(p.meter.split('/')[0]));
  if(index>=0){const localBeat=Math.floor((index%barSteps)/p.perBeat)+1;$('#scoreBeat').textContent='Beat '+localBeat;$('#miniCount').textContent='Beat '+localBeat;$('#scoreBar').textContent='Bar '+(Math.floor(index/barSteps)+1)+(p.steps>barSteps?' / '+Math.ceil(p.steps/barSteps):'');}
- const view=$('#scoreViewport'),note=$('#notation');if(index>=0&&view.clientWidth&&$('#playerDock').dataset.size!=='mini'){const target=scorePosition(p,index)/scoreLayout(p).width*note.scrollWidth;view.scrollLeft=Math.max(0,target-view.clientWidth*.35);}
+ const view = $('#scoreViewport');
+ const score = $('#notation');
+ const follow = index >= 0 && view.clientWidth > 0 && score.offsetWidth > view.clientWidth;
+ view.classList.toggle('follow-wide-score', follow);
+ if (follow) {
+   const matrix = score.querySelector('svg')?.getScreenCTM();
+   if (matrix) {
+     const cursorX = matrix.e + matrix.a * scorePosition(p, index);
+     const centerX = view.getBoundingClientRect().left + view.clientLeft + view.clientWidth / 2;
+     view.scrollLeft += cursorX - centerX;
+   }
+ }
+
 };
 
 let draft=cleanPattern({name:'Pola pertamaku',meter:'4/4',steps:16,perBeat:4});

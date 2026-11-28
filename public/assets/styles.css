@@ -122,3 +122,9 @@ body.youtube-study { overflow: hidden; }
 
 .song-lab{margin:16px 0;padding:14px;border:1px solid #625b46;border-radius:12px;background:#28271f}
 .song-lab h4{font-size:16px;margin:0 0 10px}.song-lab p{font-size:13px;line-height:1.6}.song-lab button{font-size:12px;min-height:34px;padding:6px 9px}.song-lab .primary{min-height:38px;min-width:0}.song-lab .actions{gap:6px;margin:10px 0}.song-lab .form-row{gap:8px;margin:10px 0}.song-lab label{font-size:12px}.song-lab input:not([type=checkbox]),.song-lab select{font-size:12px;min-height:34px;padding:6px;max-width:100%;background:#1d211b;color:#e3e9e2;border:1px solid #555;border-radius:6px}.song-lab input[type=number]{width:85px}.song-lab input[type=range]{min-height:0;padding:0}.song-lab [hidden]{display:none!important}#songRecording>label{display:flex;flex-direction:column;align-items:start;gap:5px;margin:12px 0}#songName{width:100%}#songWaveform{display:block;width:100%;height:110px;margin:12px 0;cursor:crosshair;border:1px solid #535e4d;border-radius:8px}#songAudio{width:100%;height:38px}.song-level-buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.song-level-buttons button{font-size:11px;padding:7px 4px;line-height:1.4}.song-level-buttons button[aria-pressed=true]{background:#46664c;border-color:#a6c6a6}.song-lab .song-limit{font-size:11px;color:#bcb9a4}.song-lab #songCandidates button{border-color:#73734e;color:#e2dcae}.song-lab #songEngine,.song-lab #songTempoReport{font-size:12px;color:#c5c5af}
+
+.score-viewport.follow-wide-score::before,
+.score-viewport.follow-wide-score::after {
+  content: "";
+  flex: 0 0 50%;
+}

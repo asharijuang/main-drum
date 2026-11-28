@@ -18,3 +18,9 @@
   .with-video .youtube-notes-column, .with-video .youtube-video-column { overflow: visible; }
   .with-video .sheet-row svg { min-width: 0; }
 }
+
+#collectionSheet {
+  padding-block: var(--follow-space, 0px);
+  overflow-anchor: none;
+}
+.loop-preview { opacity: .76; }
